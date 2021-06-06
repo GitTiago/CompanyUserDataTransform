@@ -46,14 +46,14 @@ def test_remove_under_30s():
         {
             "forename": "Jane",
             "surname": "Smith",
-            "date_of_birth": "2001/10/12",
+            "date_of_birth": "1971/10/12",
             "location": "London",
             "company_id": 3
         },
         {
             "forename": "Mark",
             "surname": "Johnson",
-            "date_of_birth": "1987/01/28",
+            "date_of_birth": "1971/10/11",
             "location": "New York",
             "company_id": 1
         }
@@ -68,7 +68,7 @@ def test_remove_under_30s():
         class NewDate(date):
             @classmethod
             def today(cls):
-                return cls(year=2021, month=6, day=6)
+                return cls(year=2001, month=10, day=12)
 
         with patch("cli.domain.date", NewDate):
             remove_under_30s(user_json_file, output_file)

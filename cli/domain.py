@@ -1,6 +1,8 @@
 from datetime import date, datetime, timedelta
 from typing import List, Any, Dict, Optional
+from math import floor
 
+from dateutil.relativedelta import relativedelta
 from pydantic import BaseModel, validator
 
 DATE_FORMAT = "%Y/%m/%d"
@@ -34,8 +36,8 @@ class User(BaseModel):
         return not self.is_older_than(18)
 
     def is_older_than(self, n_years_old: int):
-        age: timedelta = date.today() - self.date_of_birth
-        return age > timedelta(days=365*n_years_old)
+        n_years_ago_date = date.today() - relativedelta(years=n_years_old)
+        return self.date_of_birth < n_years_ago_date
 
     class Config:
         json_encoders = {

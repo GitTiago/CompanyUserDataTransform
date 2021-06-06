@@ -2,6 +2,7 @@ import json
 from datetime import date, timedelta
 
 import pytest
+from dateutil.relativedelta import relativedelta
 from pydantic import ValidationError
 
 from cli.domain import User, UserList
@@ -50,8 +51,8 @@ def test_serialize_date():
 def test_user_older_than():
     # Test all reasonable ages
     for age in range(0, 100):
-        exact_date = date.today() - timedelta(days=365 * age)
-        more_than_date = date.today() - timedelta(days=365 * age + 1)
+        exact_date = date.today() - relativedelta(years=age)
+        more_than_date = date.today() - relativedelta(years=age, days=1)
 
         exactly_age_user = User(
             forename="Git",
