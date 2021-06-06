@@ -4,7 +4,7 @@ from typing import Dict, List
 import typer
 from typer import FileText, FileTextWrite
 
-from domain import User, UserList, Company, CompanyUser
+from cli.domain import User, UserList, Company, CompanyUser
 
 app = typer.Typer()
 

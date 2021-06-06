@@ -4,7 +4,7 @@ from datetime import date, timedelta
 import pytest
 from pydantic import ValidationError
 
-from domain import User, UserList
+from cli.domain import User, UserList
 
 
 def test_user_date_format():

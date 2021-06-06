@@ -3,7 +3,7 @@ from tempfile import TemporaryFile
 from datetime import date
 from unittest.mock import patch
 
-from transform import add_fullname, remove_under_30s, transform_user_to_include_company
+from cli.transform import add_fullname, remove_under_30s, transform_user_to_include_company
 
 
 def test_add_fullname():
@@ -70,7 +70,7 @@ def test_remove_under_30s():
             def today(cls):
                 return cls(year=2021, month=6, day=6)
 
-        with patch("domain.date", NewDate):
+        with patch("cli.domain.date", NewDate):
             remove_under_30s(user_json_file, output_file)
         output_file.seek(0)
 
