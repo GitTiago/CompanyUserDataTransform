@@ -3,7 +3,7 @@ from tempfile import TemporaryFile
 from datetime import date
 from unittest.mock import patch
 
-from cli.transform import add_fullname, remove_under_30s, transform_user_to_include_company
+from cli.transform import add_fullname, remove_under_30s, resolve_company_id
 
 
 def test_add_fullname():
@@ -135,7 +135,7 @@ def test_transform_user_to_include_company():
         company_json_file.write(company_json)
         company_json_file.seek(0)
 
-        transform_user_to_include_company(user_json_file, company_json_file, output_file)
+        resolve_company_id(user_json_file, company_json_file, output_file)
         output_file.seek(0)
 
         added_company_dict = json.load(output_file)
