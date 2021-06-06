@@ -30,11 +30,6 @@ class User(BaseModel):
             DATE_FORMAT
         ).date()
 
-    class Config:
-        json_encoders = {
-            date: lambda x: x.strftime(DATE_FORMAT)
-        }
-
     def is_underage(self):
         return not self.is_older_than(18)
 
@@ -42,9 +37,21 @@ class User(BaseModel):
         age: timedelta = date.today() - self.date_of_birth
         return age > timedelta(days=365*n_years_old)
 
+    class Config:
+        json_encoders = {
+            date: lambda v: v.strftime(DATE_FORMAT)
+        }
+
 
 class UserList(BaseModel):
     __root__: List[User]
+
+    # Repeated config as the parent model does not necessarily use the child encoders
+    # https://github.com/samuelcolvin/pydantic/issues/2277
+    class Config:
+        json_encoders = {
+            date: lambda v: v.strftime(DATE_FORMAT)
+        }
 
 
 class Company(BaseModel):

@@ -1,9 +1,10 @@
+import json
 from datetime import date, timedelta
 
 import pytest
 from pydantic import ValidationError
 
-from domain import User
+from domain import User, UserList
 
 
 def test_user_date_format():
@@ -16,8 +17,34 @@ def test_user_date_format():
 
     with pytest.raises(ValidationError) as e_info:
         User(**valid_user_dict, date_of_birth="1970-01-01")
-    
+
     assert "time data '1970-01-01' does not match format '%Y/%m/%d'" in str(e_info.value)
+
+
+def test_serialize_date_in_user_list():
+    user = User(
+        forename="Git",
+        surname="Tiago",
+        date_of_birth="1970/01/01",
+        location="United Kingdom",
+        company_id=1,
+    )
+    user_list = UserList(__root__=[user])
+    user_dict_list = json.loads(user_list.json())
+    assert user_dict_list[0]["date_of_birth"] == "1970/01/01"
+
+
+def test_serialize_date():
+    user = User(
+        forename="Git",
+        surname="Tiago",
+        date_of_birth="1970/01/01",
+        location="United Kingdom",
+        company_id=1,
+    )
+
+    user_dict = json.loads(user.json())
+    assert user_dict["date_of_birth"] == "1970/01/01"
 
 
 def test_user_older_than():
