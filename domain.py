@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import List, Any, Dict, Optional
 
 from pydantic import BaseModel, validator
@@ -32,6 +32,13 @@ class User(BaseModel):
         json_encoders = {
             date: lambda x: x.strftime(DATE_FORMAT)
         }
+
+    def is_underage(self):
+        return not self.is_older_than(18)
+
+    def is_older_than(self, n_years_old: int):
+        age: timedelta = date.today() - self.date_of_birth
+        return age > timedelta(days=365*n_years_old)
 
 
 class UserList(BaseModel):
