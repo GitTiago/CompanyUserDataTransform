@@ -23,6 +23,8 @@ class User(BaseModel):
 
     @validator("date_of_birth", pre=True)
     def parse_birthdate(cls, value):
+        if isinstance(value, date):
+            return value
         return datetime.strptime(
             value,
             DATE_FORMAT
@@ -50,3 +52,7 @@ class Company(BaseModel):
     name: str
     headquarters: str
     industry: str
+
+
+class CompanyUser(User):
+    company: Company

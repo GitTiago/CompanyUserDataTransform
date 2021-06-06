@@ -4,7 +4,7 @@ from typing import Dict, List
 import typer
 from typer import FileText, FileTextWrite
 
-from domain import User, UserList
+from domain import User, UserList, Company, CompanyUser
 
 app = typer.Typer()
 
@@ -29,10 +29,23 @@ def remove_under_30s(json_user_file: FileText, output_json_file: FileTextWrite):
                                           }))
 
 
-@app.command()
+@app.command(name="resolve_company")
 def transform_user_to_include_company(json_user_file: FileText, json_company_file: FileText,
                                       output_json_file: FileTextWrite):
-    pass
+    company_generator = (Company(**company_dict) for company_dict in json.load(json_company_file))
+    companies_by_id = {company.id: company for company in company_generator}
+
+    user_dicts: List[Dict] = json.load(json_user_file)
+    user_generator = (User(**user_dict) for user_dict in user_dicts)
+    company_user_generator = (CompanyUser(**user.dict(),
+                                          company=companies_by_id[user.company_id]) for user in user_generator)
+    user_list = UserList(__root__=list(company_user_generator))
+    output_json_file.write(user_list.json(indent=4,
+                                          exclude={
+                                              '__root__': {
+                                                  '__all__': {'full_name', 'company_id'}
+                                              }
+                                          }))
 
 
 if __name__ == "__main__":
